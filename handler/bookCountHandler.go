@@ -9,12 +9,8 @@ import (
 	"strings"
 )
 
-/** BookCountHandler handles the /librarystats/v1/bookcount/ endpoint
- * it handles the request and response for the endpoint.
- *
- * @param w http.ResponseWriter the response writer for the request
- * @param r *http.Request the request object
- */
+// BookCountHandler handles the /librarystats/v1/bookcount/ endpoint
+// it handles the request and response for the endpoint.
 func BookCountHandler(w http.ResponseWriter, r *http.Request) {
 	// Ensure interpretation as JSON by client
 	w.Header().Set("content-type", "application/json")
@@ -35,12 +31,8 @@ func BookCountHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
-/** handleReaderCountGetRequest handles the GET request for the /librarystats/v1/bookcount/ endpoint
- * it handles the Get request and response.
- *
- * @param w http.ResponseWriter the response writer for the request
- * @param r *http.Request the request object
- */
+// handleReaderCountGetRequest handles the GET request for the /librarystats/v1/bookcount/ endpoint
+// it handles the Get request and response.
 func handleBookCountGetRequest(w http.ResponseWriter, r *http.Request) {
 	// Get the language query
 	var query = r.URL.Query().Get("language")
@@ -70,11 +62,8 @@ func handleBookCountGetRequest(w http.ResponseWriter, r *http.Request) {
 
 }
 
-/** handelStatusErrorPage handles the main page for the /librarystats/v1/bookcount/ endpoint
- * it provides the user with information on how to use the endpoint. in case of no query or mistype it will show the main page.
- *
- * @param w http.ResponseWriter the response writer for the request
- */
+// handelStatusErrorPage handles the main page for the /librarystats/v1/bookcount/ endpoint
+// it provides the user with information on how to use the endpoint. in case of no query or mistype it will show the main page.
 func handelBookCountMainPage(w http.ResponseWriter) {
 	// Offer information for redirection to paths
 	output := "Welcome to the book count service where you can get number of books and authors for your chosen language." +

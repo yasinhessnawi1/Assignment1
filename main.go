@@ -24,6 +24,7 @@ func main() {
 
 }
 
+// setUpPort sets the port for the server
 func setUpPort() {
 	// Get the PORT environment variable
 	port = os.Getenv("PORT")

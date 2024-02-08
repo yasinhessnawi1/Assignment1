@@ -5,17 +5,7 @@ import (
 	"oblig1-ct/utils"
 )
 
-/*
-*
-
-  - MainPageHandler handles the /librarystats/v1/ endpoint
-
-  - it handles the request and response for the endpoint.
-
-  - @param w http.ResponseWriter the response writer for the request
-
-  - @param r *http.Request needed parameter from the http package otherwise not needed in this function
-*/
+// MainPageHandler handles the /librarystats/v1/ endpoint .it handles the request and response for the endpoint.
 func MainPageHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Ensure interpretation as HTML by client (browser)

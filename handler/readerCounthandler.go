@@ -9,13 +9,7 @@ import (
 	"strings"
 )
 
-/**
- * ReaderCountHandler handles the /librarystats/v1/readership/ endpoint
- * it handles the request and response for the endpoint.
- *
- * @param w http.ResponseWriter the response writer for the request
- * @param r *http.Request the request object
- */
+// ReaderCountHandler handles the /librarystats/v1/readership/ endpoint .it handles the request and response for the endpoint.
 func ReaderCountHandler(w http.ResponseWriter, r *http.Request) {
 	// Ensure interpretation as JSON by client
 	w.Header().Set("content-type", "application/json")
@@ -36,13 +30,7 @@ func ReaderCountHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
-/**
- * handleReaderCountGetRequest handles the GET request for the /librarystats/v1/readership/ endpoint
- * it handles the Get request and response.
- *
- * @param w http.ResponseWriter the response writer for the request
- * @param r *http.Request the request object
- */
+// handleReaderCountGetRequest handles the GET request for the /librarystats/v1/readership/ endpoint
 func handleReaderCountGetRequest(w http.ResponseWriter, r *http.Request) {
 	languageCode := extractLanguageCode(r.URL.Path)
 	letterCount := len(languageCode)
@@ -95,12 +83,8 @@ func extractLanguageCode(path string) string {
 	return ""
 }
 
-/**
- * handelReaderCountMainPage handles the main page for the /librarystats/v1/readership/ endpoint
- * it provides the user with information on how to use the endpoint. in case of no query or mistype it will show the main page.
- *
- * @param w http.ResponseWriter the response writer for the request
- */
+// handelReaderCountMainPage handles the main page for the /librarystats/v1/readership/ endpoint
+// it provides the user with information on how to use the endpoint. in case of no query or mistype it will show the main page.
 func handelReaderCountMainPage(w http.ResponseWriter) {
 	// Offer information for redirection to paths
 	output := "Welcome to the reader count service where you can get number of readers for your chosen language." +

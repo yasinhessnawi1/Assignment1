@@ -6,12 +6,7 @@ import (
 	"oblig1-ct/utils"
 )
 
-/** StatusHandler handles the /librarystats/v1/statatus/ endpoint
- * it handles the request and response for the endpoint.
- *
- * @param w http.ResponseWriter the response writer for the request
- * @param r *http.Request the request object
- */
+// StatusHandler handles the /librarystats/v1/status/ endpoint .it handles the request and response for the endpoint.
 func StatusHandler(w http.ResponseWriter, r *http.Request) {
 	// Ensure interpretation as JSON by client
 	w.Header().Set("content-type", "application/json")
@@ -32,23 +27,16 @@ func StatusHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
-/** handleStatusGetRequest handles the GET request for the /librarystats/v1/status/ endpoint
- * it handles the Get request and response.
- *
- * @param w http.ResponseWriter the response writer for the request
- * @param r *http.Request the request object
- */
+// handleStatusGetRequest handles the GET request for the /librarystats/v1/status/ endpoint.
+// it handles the Get request and response.
 func handleStatusGetRequest(w http.ResponseWriter) {
 	status := entities.Status{Qutendexapi: 100, Languageapi: 100, Countriesapi: 100, Version: "v1", Uptime: utils.GetUptime().String()}
 	// Encode JSON
 	encodeWithJson(w, status)
 }
 
-/** handelStatusErrorPage handles the main page for the /librarystats/v1/status/ endpoint
- * it provides the user with information about the current status of the services.
- *
- * @param w http.ResponseWriter the response writer for the request
- */
+// handelStatusErrorPage handles the main page for the /librarystats/v1/status/ endpoint
+// it provides the user with information about the current status of the services.
 func handelStatusErrorPage(w http.ResponseWriter) {
 	// Offer information for redirection to paths
 	output := "Welcome to the status service where you can get the status code and information of the different apis ." +
