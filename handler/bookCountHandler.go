@@ -9,8 +9,7 @@ import (
 	"strings"
 )
 
-/**
- * BookCountHandler handles the /librarystats/v1/bookcount/ endpoint
+/** BookCountHandler handles the /librarystats/v1/bookcount/ endpoint
  * it handles the request and response for the endpoint.
  *
  * @param w http.ResponseWriter the response writer for the request
@@ -36,8 +35,7 @@ func BookCountHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
-/**
- * handleReaderCountGetRequest handles the GET request for the /librarystats/v1/bookcount/ endpoint
+/** handleReaderCountGetRequest handles the GET request for the /librarystats/v1/bookcount/ endpoint
  * it handles the Get request and response.
  *
  * @param w http.ResponseWriter the response writer for the request
@@ -72,8 +70,7 @@ func handleBookCountGetRequest(w http.ResponseWriter, r *http.Request) {
 
 }
 
-/**
- * handelReaderCountMainPage handles the main page for the /librarystats/v1/bookcount/ endpoint
+/** handelStatusErrorPage handles the main page for the /librarystats/v1/bookcount/ endpoint
  * it provides the user with information on how to use the endpoint. in case of no query or mistype it will show the main page.
  *
  * @param w http.ResponseWriter the response writer for the request
@@ -81,11 +78,11 @@ func handleBookCountGetRequest(w http.ResponseWriter, r *http.Request) {
 func handelBookCountMainPage(w http.ResponseWriter) {
 	// Offer information for redirection to paths
 	output := "Welcome to the book count service where you can get number of books and authors for your chosen language." +
-		"\n You can use the service as follows: " +
-		"\n1. " + utils.BOOK_COUNT + "?language=" + "(two letter language code)" +
-		"\n example: " + utils.BOOK_COUNT + "?language=en " + " -> This will return the number of books in English." +
-		"\n2. " + utils.BOOK_COUNT + "?language=" + "(two letter language code)" + "(,)(two letter language code)" +
-		"\n example: " + utils.BOOK_COUNT + "?language=en,fr" + " -> This will return the number of books in English and French."
+		" You can use the service as follows: " +
+		" 1. " + utils.BOOK_COUNT + "?language=" + "(two letter language code)" +
+		" Example: " + utils.BOOK_COUNT + "?language=en " + " -> This will return the number of books in English." +
+		" 2. " + utils.BOOK_COUNT + "?language=" + "(two letter language code)" + "(,)(two letter language code)" +
+		" Example: " + utils.BOOK_COUNT + "?language=en,fr" + " -> This will return the number of books in English and French."
 	// Write output to client
 	encodeWithJson(w, output)
 }

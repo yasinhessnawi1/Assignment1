@@ -16,3 +16,13 @@ type Readership struct {
 	Authors    int    `json:"authors"`
 	Readership int    `json:"readership"`
 }
+
+// Status is a struct that holds the status of the service
+
+type Status struct {
+	Qutendexapi  int    `json:"gutendexapi"`
+	Languageapi  int    `json:"languageapi"`
+	Countriesapi int    `json:"countriesapi"`
+	Version      string `json:"version"`
+	Uptime       string `json:"uptime"`
+}

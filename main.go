@@ -11,11 +11,13 @@ import (
 var port string
 
 func main() {
+	utils.StartUptime()
 	setUpPort()
 	// Set up handler endpoints
 	http.HandleFunc(utils.DEFAULT_PATH, handler.MainPageHandler)
 	http.HandleFunc(utils.BOOK_COUNT, handler.BookCountHandler)
 	http.HandleFunc(utils.READERSHIP, handler.ReaderCountHandler)
+	http.HandleFunc(utils.STATUS, handler.StatusHandler)
 	// Start server
 	log.Println("Starting server on port " + port + " ...")
 	log.Fatal(http.ListenAndServe(":"+port, nil))
