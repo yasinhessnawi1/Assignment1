@@ -7,9 +7,9 @@ import (
 	"strings"
 )
 
-// BookCountHandler handles the /librarystats/v1/bookcount/ endpoint
+// BookCountEndPoint handles the /librarystats/v1/bookcount/ endpoint
 // it handles the request and response for the endpoint.
-func BookCountHandler(w http.ResponseWriter, r *http.Request) {
+func BookCountEndPoint(w http.ResponseWriter, r *http.Request) {
 	// Ensure interpretation as JSON by client
 	w.Header().Set("content-type", "application/json")
 	//it checks if the request have a query then it handles the request and the query otherwise
@@ -127,7 +127,8 @@ func handelBookCountMainPage(w http.ResponseWriter) {
 		" 1. " + utils.BOOK_COUNT + "?language=" + "(two letter language code)" +
 		" Example: " + utils.BOOK_COUNT + "?language=en " + " -> This will return the number of books in English." +
 		" 2. " + utils.BOOK_COUNT + "?language=" + "(two letter language code)" + "(,)(two letter language code)" +
-		" Example: " + utils.BOOK_COUNT + "?language=en,fr" + " -> This will return the number of books in English and French."
+		" Example: " + utils.BOOK_COUNT + "?language=en,fr" + " -> This will return the number of books in English and French." +
+		"Note: if the books with the given language are a lot, the request would take some time. Please be patient."
 	// Write output to client
 	encodeWithJson(w, output)
 }

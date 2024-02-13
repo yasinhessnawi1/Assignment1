@@ -9,8 +9,8 @@ import (
 	"strings"
 )
 
-// ReaderCountHandler handles the /librarystats/v1/readership/ endpoint .it handles the request and response for the endpoint.
-func ReaderCountHandler(w http.ResponseWriter, r *http.Request) {
+// ReaderShipEndPoint handles the /librarystats/v1/readership/ endpoint .it handles the request and response for the endpoint.
+func ReaderShipEndPoint(w http.ResponseWriter, r *http.Request) {
 	// Ensure interpretation as JSON by client
 	w.Header().Set("content-type", "application/json")
 	//it checks if the request have a query then it handles the request and the query otherwise
