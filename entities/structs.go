@@ -1,5 +1,9 @@
 package entities
 
+import (
+	"oblig1-ct/utils"
+)
+
 // BookCount is a struct that holds the number of books and authors for a given language
 type BookCount struct {
 	Language string  `json:"language"`
@@ -24,4 +28,8 @@ type Status struct {
 	Countriesapi int    `json:"countriesapi"`
 	Version      string `json:"version"`
 	Uptime       string `json:"uptime"`
+}
+
+func (b *BookCount) CalculateFraction() {
+	b.Fraction = float64(b.Books) / float64(utils.TOTAL_BOOKS_IN_GUTENDEX)
 }

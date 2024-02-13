@@ -1,11 +1,9 @@
 package handler
 
 import (
-	"log"
 	"net/http"
 	"oblig1-ct/entities"
 	"oblig1-ct/utils"
-	"strconv"
 	"strings"
 )
 
@@ -31,35 +29,93 @@ func BookCountHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
-// handleReaderCountGetRequest handles the GET request for the /librarystats/v1/bookcount/ endpoint
-// it handles the Get request and response.
 func handleBookCountGetRequest(w http.ResponseWriter, r *http.Request) {
 	// Get the language query
 	var query = r.URL.Query().Get("language")
 	// Split the query by comma to ensure that the user can get the number of books for multiple languages
 	languages := strings.Split(query, ",")
-	for _, lang := range languages {
-		letterCount := len(lang)
-		if letterCount <= 0 {
-			log.Println("Invalid letter length: " + strconv.Itoa(letterCount) + ("line 55 in bookCountHandler.go"))
-			http.Error(w, "No language code provided. "+" (Please provide a language code of two letters)",
-				http.StatusBadRequest)
-			continue
-		} else {
-			if letterCount != 2 {
-				log.Println("Invalid language code: " + lang + ("line 59 in bookCountHandler.go"))
-				http.Error(w, "Invalid language code: "+"'"+lang+"'"+
+	langCount := len(languages)
+	if langCount > 0 {
+		for _, language := range languages {
+			languageLetters := len(language)
+			if languageLetters == 0 {
+				http.Error(w, "No language code provided. "+" (Please provide a language code of two letters)",
+					http.StatusBadRequest)
+				return
+			} else if languageLetters != 2 {
+				http.Error(w, "Invalid language code: "+"'"+language+"'"+
 					" (Please provide a language code of two letters)", http.StatusBadRequest)
-				continue
-			} else {
-				testBook := entities.BookCount{Language: lang, Books: 100, Authors: 50, Fraction: 0.5}
-				// Encode JSON
-				encodeWithJson(w, testBook)
+				return
 			}
 		}
 
-	}
+		// Call ExternalEndPointRequestsHandler only once
+		res := ExternalEndPointRequestsHandler(utils.GUTENDEX + query)
 
+		// Call handleLanguageRequest with the original query result
+		handleLanguageRequest(w, languages, res)
+	}
+}
+
+func handleLanguageRequest(w http.ResponseWriter, languages []string, res []map[string]interface{}) {
+	for _, lang := range languages {
+		// Get the results for the language
+		var resultsForLanguage []map[string]interface{}
+		for _, book := range res {
+			// Check if "languages" field exists and is a slice of strings
+			if language, ok := book["languages"]; ok {
+				if languageSlice, isSlice := language.([]interface{}); isSlice {
+					for _, langItem := range languageSlice {
+						if langString, isString := langItem.(string); isString {
+							if langString == lang {
+								resultsForLanguage = append(resultsForLanguage, book)
+								break // Exit the loop after finding a match
+							}
+						}
+					}
+				}
+			}
+		}
+		// Create new book count object
+		authorsCount, bookCount := findResultsOfTheCounts(resultsForLanguage)
+		book := entities.BookCount{Language: lang, Books: bookCount, Authors: authorsCount}
+		// Calculate fraction
+		book.CalculateFraction()
+		// Encode JSON
+		encodeWithJson(w, book)
+	}
+}
+
+func findResultsOfTheCounts(res []map[string]interface{}) (int, int) {
+	bookCount := 0
+	uniqueAuthors := make(map[string]interface{})
+	totalAuthorsCount := 0
+
+	for _, book := range res {
+		// Check if "authors" field exists and is an array
+		if authors, ok := book["authors"].([]interface{}); ok {
+			// Exclude books with unknown authors
+			if len(authors) > 0 {
+				for _, authorMap := range authors {
+					if author, ok := authorMap.(map[string]interface{}); ok {
+						// Extract the "name" field from the author map
+						if authorName, nameOk := author["name"].(string); nameOk {
+							// Trim whitespaces and convert to lowercase
+							authorName = strings.TrimSpace(strings.ToLower(authorName))
+							// Add to unique authors map
+							if _, exist := uniqueAuthors[authorName]; !exist {
+								uniqueAuthors[authorName] = nil
+							}
+						}
+					}
+					totalAuthorsCount++
+				}
+				// Increment bookCount only if there are known authors
+				bookCount++
+			}
+		}
+	}
+	return len(uniqueAuthors), bookCount
 }
 
 // handelStatusErrorPage handles the main page for the /librarystats/v1/bookcount/ endpoint
