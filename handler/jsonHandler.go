@@ -34,10 +34,8 @@ func decodeWithJson(r *http.Response) ([]map[string]interface{}, string) {
 				resultsSlice = append(resultsSlice, resultMap)
 			}
 		}
-
 		// Extract "next" URL from the response
 		nextURL, _ := response["next"].(string)
-
 		return resultsSlice, nextURL
 	}
 

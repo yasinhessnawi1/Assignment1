@@ -5,9 +5,17 @@ import (
 	"oblig1-ct/utils"
 )
 
-// MainPageHandler handles the /librarystats/v1/ endpoint .it handles the request and response for the endpoint.
-func MainPageHandler(w http.ResponseWriter, r *http.Request) {
+// HomeEndPoint handles the /librarystats/v1/ endpoint .it handles the request and response for the endpoint.
+func HomeEndPoint(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodGet {
+		handleGetRequestForMainPage(w)
+	} else {
+		http.Error(w, "REST Method '"+r.Method+"' not supported. Currently only '"+http.MethodGet+
+			" is supported.", http.StatusNotImplemented)
+	}
+}
 
+func handleGetRequestForMainPage(w http.ResponseWriter) {
 	// Ensure interpretation as HTML by client (browser)
 	w.Header().Set("content-type", "application/json")
 	// Offer information for redirection to paths
