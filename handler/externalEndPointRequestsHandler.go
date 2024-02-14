@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-func ExternalEndPointRequestsHandler(baseUrl string) []map[string]interface{} {
+func ExternalEndPointRequestsHandler(baseUrl string, typeRequest string) []map[string]interface{} {
 	var allResults []map[string]interface{}
 	var url = baseUrl
 
@@ -23,9 +23,14 @@ func ExternalEndPointRequestsHandler(baseUrl string) []map[string]interface{} {
 			log.Println("Error in response:", err.Error())
 			return allResults
 		}
-
-		// Decode the JSON response and get the next URL
-		results, nextURL := decodeWithJson(res)
+		var results []map[string]interface{}
+		var nextURL string
+		if typeRequest == "bookCount" {
+			// Decode the JSON response and get the next URL
+			results, nextURL = decodeForBookCount(res)
+		} else if typeRequest == "readerShip" {
+			results = decodeForReaderShip(res)
+		}
 
 		// Append the current page results to the overall results
 		allResults = append(allResults, results...)

@@ -2,6 +2,7 @@ package utils
 
 // DEFAULT_PATH is the default path for the handler
 const DEFAULT_PATH = "/librarystats/v1"
+const HomeEndPoint = "/"
 const BOOK_COUNT = "/librarystats/v1/bookcount/"
 const READERSHIP = "/librarystats/v1/readership/"
 const STATUS = "/librarystats/v1/status/"
@@ -14,7 +15,7 @@ const TOTAL_BOOKS_IN_GUTENDEX int = 72810
 //Documentation: http://129.241.150.113:8000/
 
 // Fallback URL (temporary use; please use responsibly!):
-const GUTENDEX = "https://gutendex.com/books?languages="
+const GUTENDEX = "http://129.241.150.113:8000/books/?languages="
 
 //Language2Countries API
 
@@ -23,7 +24,7 @@ const GUTENDEX = "https://gutendex.com/books?languages="
 //Documentation: http://129.241.150.113:3000/
 
 // Fallback URL: (temporary use; may be slow!):
-const LANGUAGE_COUNTRY = "https://language2countries.onrender.com/"
+const LANGUAGE_COUNTRY = "http://129.241.150.113:3000/language2countries/"
 
 //REST Countries API
 
@@ -32,4 +33,4 @@ const LANGUAGE_COUNTRY = "https://language2countries.onrender.com/"
 //Documentation: http://129.241.150.113:8080/
 
 // Fallback URL (use responsibly!):
-const COUNTRIES = "https://restcountries.com/"
+const COUNTRIES = "http://129.241.150.113:8080/v3.1"

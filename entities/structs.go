@@ -14,11 +14,11 @@ type BookCount struct {
 
 // Readership is a struct that holds the number of readers for a given language
 type Readership struct {
-	Country    string `json:"country"`
-	Isocode    string `json:"isocode"`
-	Books      int    `json:"books"`
-	Authors    int    `json:"authors"`
-	Readership int    `json:"readership"`
+	Country    string  `json:"country"`
+	Isocode    string  `json:"isocode"`
+	Books      int     `json:"books"`
+	Authors    int     `json:"authors"`
+	Readership float64 `json:"readership"`
 }
 
 // Status is a struct that holds the status of the service

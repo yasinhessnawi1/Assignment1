@@ -14,6 +14,7 @@ func StartWebService() {
 	utils.StartUptime()
 	// Set up handler endpoints
 	http.HandleFunc(utils.DEFAULT_PATH, handler.HomeEndPoint)
+	http.HandleFunc(utils.HomeEndPoint, handler.HomeEndPoint)
 	http.HandleFunc(utils.BOOK_COUNT, handler.BookCountEndPoint)
 	http.HandleFunc(utils.READERSHIP, handler.ReaderShipEndPoint)
 	http.HandleFunc(utils.STATUS, handler.StatusEndPoint)

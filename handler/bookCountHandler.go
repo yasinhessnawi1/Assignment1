@@ -50,7 +50,7 @@ func handleBookCountGetRequest(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// Call ExternalEndPointRequestsHandler only once
-		res := ExternalEndPointRequestsHandler(utils.GUTENDEX + query)
+		res := ExternalEndPointRequestsHandler(utils.GUTENDEX+query, "bookCount")
 
 		// Call handleLanguageRequest with the original query result
 		handleLanguageRequest(w, languages, res)

@@ -15,8 +15,8 @@ func encodeWithJson(w http.ResponseWriter, responseObject interface{}) {
 	}
 }
 
-// decodeWithJson decodes the request body with JSON and returns the object
-func decodeWithJson(r *http.Response) ([]map[string]interface{}, string) {
+// decodeForBookCount decodes the request body with JSON and returns the object
+func decodeForBookCount(r *http.Response) ([]map[string]interface{}, string) {
 	var response map[string]interface{}
 
 	decoder := json.NewDecoder(r.Body)
@@ -41,4 +41,18 @@ func decodeWithJson(r *http.Response) ([]map[string]interface{}, string) {
 
 	log.Println("Unexpected JSON format, no 'results' field found")
 	return nil, ""
+}
+func decodeForReaderShip(r *http.Response) []map[string]interface{} {
+
+	// Check if "results" field exists and is an array
+	var response []map[string]interface{}
+
+	decoder := json.NewDecoder(r.Body)
+	if err := decoder.Decode(&response); err != nil {
+		log.Println("Error during JSON decoding:", err.Error())
+		return nil
+	}
+
+	return response
+
 }
