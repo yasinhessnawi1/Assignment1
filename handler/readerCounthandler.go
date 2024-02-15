@@ -27,7 +27,7 @@ func ReaderShipEndPoint(w http.ResponseWriter, r *http.Request) {
 				" is supported.", http.StatusNotImplemented)
 		}
 	} else {
-		handelReaderCountMainPage(w)
+		handelReaderCountMainPage(w, r.Host)
 	}
 
 }
@@ -136,15 +136,15 @@ func extractLanguageCode(path string) string {
 
 // handelReaderCountMainPage handles the main page for the /librarystats/v1/readership/ endpoint
 // it provides the user with information on how to use the endpoint. in case of no query or mistype it will show the main page.
-func handelReaderCountMainPage(w http.ResponseWriter) {
+func handelReaderCountMainPage(w http.ResponseWriter, path string) {
 	// Offer information for redirection to paths
-	output := "Welcome to the reader count service where you can get number of readers for your chosen language." +
-		" You can use the service as follows: " +
-		" 1. " + utils.READERSHIP + "(two letter language code)" +
-		" Example: " + utils.READERSHIP + "/no" + " -> This will return the number of readers of norwegian language." +
-		" 2. " + utils.READERSHIP + "(two letter language code)" + "?limit=number of your choice" +
-		" Example: " + utils.READERSHIP + "/no/?limit=5" + " -> This will return the number of books in " +
-		"norwegian language with the limit of 5."
+	output := "Welcome to the readership service where you can get number of readers for your chosen language.\n" +
+		" You can use the service as follows: \n" +
+		" 1. " + path + utils.READERSHIP + "(two letter language code)\n" +
+		" Example: " + path + utils.READERSHIP + "/no" + " -> This will return the number of readers of norwegian language.\n" +
+		" 2. " + path + utils.READERSHIP + "(two letter language code)" + "?limit=number of your choice\n" +
+		" Example: " + path + utils.READERSHIP + "/no/?limit=5" + " -> This will return the readers of books in " +
+		"norwegian language with the limit of 5 countries.\n"
 	// Write output to client
-	encodeWithJson(w, output)
+	encodeTextWithHtml(w, "Readership", output)
 }

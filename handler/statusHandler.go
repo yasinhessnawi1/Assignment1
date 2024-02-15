@@ -22,7 +22,7 @@ func StatusEndPoint(w http.ResponseWriter, r *http.Request) {
 				" is supported.", http.StatusNotImplemented)
 		}
 	} else {
-		handelStatusErrorPage(w)
+		handelStatusErrorPage(w, r.Host)
 	}
 
 }
@@ -44,11 +44,11 @@ func handleStatusGetRequest(w http.ResponseWriter) {
 
 // handelStatusErrorPage handles the main page for the /librarystats/v1/status/ endpoint
 // it provides the user with information about the current status of the services.
-func handelStatusErrorPage(w http.ResponseWriter) {
+func handelStatusErrorPage(w http.ResponseWriter, path string) {
 	// Offer information for redirection to paths
-	output := "Welcome to the status service where you can get the status code and information of the different apis ." +
-		" You can use the service as follows: " +
-		" 1. " + utils.STATUS + "-> This will return the status information."
+	output := "Welcome to the status service where you can get the status code and information of the different endpoints.\n" +
+		" You can use the service as follows: \n" +
+		" 1. " + path + utils.STATUS + "-> This will return the status information.\n"
 	// Write output to client
-	encodeWithJson(w, output)
+	encodeTextWithHtml(w, "Status", output)
 }

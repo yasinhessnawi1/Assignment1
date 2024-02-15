@@ -24,7 +24,7 @@ func BookCountEndPoint(w http.ResponseWriter, r *http.Request) {
 				" is supported.", http.StatusNotImplemented)
 		}
 	} else {
-		handelBookCountMainPage(w)
+		handelBookCountMainPage(w, r.Host)
 	}
 
 }
@@ -120,15 +120,15 @@ func findResultsOfTheCounts(res []map[string]interface{}) (int, int) {
 
 // handelStatusErrorPage handles the main page for the /librarystats/v1/bookcount/ endpoint
 // it provides the user with information on how to use the endpoint. in case of no query or mistype it will show the main page.
-func handelBookCountMainPage(w http.ResponseWriter) {
+func handelBookCountMainPage(w http.ResponseWriter, path string) {
 	// Offer information for redirection to paths
-	output := "Welcome to the book count service where you can get number of books and authors for your chosen language." +
-		" You can use the service as follows: " +
-		" 1. " + utils.BOOK_COUNT + "?language=" + "(two letter language code)" +
-		" Example: " + utils.BOOK_COUNT + "?language=en " + " -> This will return the number of books in English." +
-		" 2. " + utils.BOOK_COUNT + "?language=" + "(two letter language code)" + "(,)(two letter language code)" +
-		" Example: " + utils.BOOK_COUNT + "?language=en,fr" + " -> This will return the number of books in English and French." +
-		"Note: if the books with the given language are a lot, the request would take some time. Please be patient."
+	output := "Welcome to the book count service where you can get number of books and authors for your chosen language.\n" +
+		" You can use the service as follows: \n" +
+		" 1. " + path + utils.BOOK_COUNT + "?language=" + "(two letter language code)\n" +
+		" Example: " + path + utils.BOOK_COUNT + "?language=en " + " -> This will return the number of books in English.\n" +
+		" 2. " + path + utils.BOOK_COUNT + "?language=" + "(two letter language code)" + "(,)(two letter language code)\n" +
+		" Example: " + path + utils.BOOK_COUNT + "?language=en,fr" + " -> This will return the number of books in English and French.\n" +
+		"Note: if the books with the given language are a lot, the request would take some time. Please be patient.\n"
 	// Write output to client
 	encodeTextWithHtml(w, "Book count endpoint main page", output)
 }
