@@ -26,6 +26,6 @@ func handleGetRequestForMainPage(w http.ResponseWriter) {
 		"information, please visit the documentation at" + utils.READERSHIP +
 		"\n3. " + utils.STATUS + " to get the status of the service. For more " +
 		"information, please visit the documentation at" + utils.STATUS
-	// Write output to client (function from jsonHandler.go)
+	// Write output to client (function from encodeDecodeHandler.go)
 	encodeWithJson(w, output)
 }

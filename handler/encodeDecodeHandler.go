@@ -2,6 +2,7 @@ package handler
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 )
@@ -55,4 +56,22 @@ func decodeForReaderShip(r *http.Response) []map[string]interface{} {
 
 	return response
 
+}
+func encodeTextWithHtml(w http.ResponseWriter, title string, content string) {
+	// creates a customisable html structure
+	output := fmt.Sprintf("<html><head><style>"+
+		"body { font-size: 18px; color: #333; }"+
+		"h1 { color: #0088cc; }"+
+		"</style></head><body>"+
+		"<h1>%s</h1><p>%s</p>"+
+		"</body></html>", title, content)
+
+	// Set the Content-Type header to HTML
+	w.Header().Set("Content-Type", "text/html")
+	// Write the HTML output directly to the response writer
+	_, err := fmt.Fprint(w, output)
+	if err != nil {
+		http.Error(w, "Error during HTML encoding.", http.StatusInternalServerError)
+		return
+	}
 }

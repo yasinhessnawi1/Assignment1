@@ -130,5 +130,5 @@ func handelBookCountMainPage(w http.ResponseWriter) {
 		" Example: " + utils.BOOK_COUNT + "?language=en,fr" + " -> This will return the number of books in English and French." +
 		"Note: if the books with the given language are a lot, the request would take some time. Please be patient."
 	// Write output to client
-	encodeWithJson(w, output)
+	encodeTextWithHtml(w, "Book count endpoint main page", output)
 }
