@@ -41,3 +41,18 @@ func ExternalEndPointRequestsHandler(baseUrl string, typeRequest string) []map[s
 
 	return allResults
 }
+func ExternalRequestForStatus(url string) int {
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		log.Println("Error in creating request:", err.Error())
+		return 0
+	}
+
+	// Issue request
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		log.Println("Error in response:", err.Error())
+		return 0
+	}
+	return res.StatusCode
+}

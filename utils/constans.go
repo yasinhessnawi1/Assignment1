@@ -33,4 +33,4 @@ const LANGUAGE_COUNTRY = "http://129.241.150.113:3000/language2countries/"
 //Documentation: http://129.241.150.113:8080/
 
 // Fallback URL (use responsibly!):
-const COUNTRIES = "http://129.241.150.113:8080/v3.1"
+const COUNTRIES = "http://129.241.150.113:8080/v3.1/name/"

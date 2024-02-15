@@ -94,7 +94,7 @@ func handleGetMethodResponse(w http.ResponseWriter, languageCode string, limit i
 	index := 0
 	for _, country := range countryName {
 		if index <= limit-1 {
-			restApiResult := ExternalEndPointRequestsHandler(utils.COUNTRIES+"/name/"+country, "readerShip")
+			restApiResult := ExternalEndPointRequestsHandler(utils.COUNTRIES+country, "readerShip")
 			population := extractPopulation(restApiResult)
 			result := entities.Readership{
 				Country: country, Isocode: isoCode[index], Books: bookCount, Authors: authorCount, Readership: population}

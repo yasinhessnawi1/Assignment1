@@ -30,7 +30,14 @@ func StatusEndPoint(w http.ResponseWriter, r *http.Request) {
 // handleStatusGetRequest handles the GET request for the /librarystats/v1/status/ endpoint.
 // it handles the Get request and response.
 func handleStatusGetRequest(w http.ResponseWriter) {
-	status := entities.Status{Qutendexapi: 100, Languageapi: 100, Countriesapi: 100, Version: "v1", Uptime: utils.GetUptime().String()}
+	testLANG := "no"
+	testCountry := "norway"
+	QutendexapiStatus := ExternalRequestForStatus(utils.GUTENDEX + "books/?language=" + testLANG)
+	LanguageapiStatus := ExternalRequestForStatus(utils.LANGUAGE_COUNTRY + testLANG)
+	CountriesapiStatus := ExternalRequestForStatus(utils.COUNTRIES + testCountry)
+
+	status := entities.Status{Qutendexapi: QutendexapiStatus, Languageapi: LanguageapiStatus,
+		Countriesapi: CountriesapiStatus, Version: "v1", Uptime: utils.GetUptime().String()}
 	// Encode JSON
 	encodeWithJson(w, status)
 }
