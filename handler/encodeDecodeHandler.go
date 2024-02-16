@@ -5,10 +5,12 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
 )
 
 // encodeWithJson encodes the given testBook with JSON and writes it to the response writer
 func encodeWithJson(w http.ResponseWriter, responseObject interface{}) {
+	w.Header().Set("Content-Type", "application/json")
 	encoder := json.NewEncoder(w)
 	err := encoder.Encode(responseObject)
 	if err != nil {
@@ -59,12 +61,13 @@ func decodeForReaderShip(r *http.Response) []map[string]interface{} {
 }
 func encodeTextWithHtml(w http.ResponseWriter, title string, content string) {
 	// creates a customisable html structure
+	contentWithBreaks := strings.Replace(content, "\n", "<br>", -1) // Replace newlines with <br> tags to ensure newlines are displayed
 	output := fmt.Sprintf("<html><head><style>"+
 		"body { font-size: 18px; color: #333; }"+
 		"h1 { color: #0088cc; }"+
 		"</style></head><body>"+
 		"<h1>%s</h1><p>%s</p>"+
-		"</body></html>", title, content)
+		"</body></html>", title, contentWithBreaks)
 
 	// Set the Content-Type header to HTML
 	w.Header().Set("Content-Type", "text/html")

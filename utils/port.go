@@ -5,10 +5,11 @@ import (
 	"os"
 )
 
-// setUpPort sets the port for the server
+/*
+SetUpPort sets the port for the server
+*/
 func SetUpPort() string {
 	// Get the PORT environment variable
-
 	port := os.Getenv("PORT")
 	if port == "" {
 		log.Println("$PORT has not been set. Default: 8080")

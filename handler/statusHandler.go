@@ -6,12 +6,12 @@ import (
 	"oblig1-ct/utils"
 )
 
-// StatusEndPoint handles the /librarystats/v1/status/ endpoint .it handles the request and response for the endpoint.
+/*
+StatusEndPoint handles the /librarystats/v1/status/ endpoint .it handles the request and response for the endpoint.
+*/
 func StatusEndPoint(w http.ResponseWriter, r *http.Request) {
-	// Ensure interpretation as JSON by client
-	w.Header().Set("content-type", "application/json")
 	//it checks if the request have a query then it handles the request and the query otherwise
-	//if mistype in the endpoint url or missing query it will show the main page.
+	//if mistype in the endpoint url or missing query it will show the endpoint documentation page.
 	if r.URL.Path == utils.STATUS {
 		//ensures that the request is a GET request otherwise it will return a 405 status code.
 		if r.Method == http.MethodGet {
@@ -27,23 +27,25 @@ func StatusEndPoint(w http.ResponseWriter, r *http.Request) {
 
 }
 
-// handleStatusGetRequest handles the GET request for the /librarystats/v1/status/ endpoint.
-// it handles the Get request and response.
+/*
+handleStatusGetRequest handles the GET request for the /librarystats/v1/status/ endpoint.
+it handles the Get request and response.
+*/
 func handleStatusGetRequest(w http.ResponseWriter) {
-	testLANG := "no"
-	testCountry := "norway"
-	QutendexapiStatus := ExternalRequestForStatus(utils.GUTENDEX + "books/?language=" + testLANG)
-	LanguageapiStatus := ExternalRequestForStatus(utils.LANGUAGE_COUNTRY + testLANG)
-	CountriesapiStatus := ExternalRequestForStatus(utils.COUNTRIES + testCountry)
-
+	QutendexapiStatus := ExternalRequestForStatus(utils.GUTENDEX)
+	LanguageapiStatus := ExternalRequestForStatus(utils.LANGUAGE_COUNTRY)
+	CountriesapiStatus := ExternalRequestForStatus(utils.COUNTRIES)
+	// Create status object
 	status := entities.Status{Qutendexapi: QutendexapiStatus, Languageapi: LanguageapiStatus,
 		Countriesapi: CountriesapiStatus, Version: "v1", Uptime: utils.GetUptime().String()}
 	// Encode JSON
 	encodeWithJson(w, status)
 }
 
-// handelStatusErrorPage handles the main page for the /librarystats/v1/status/ endpoint
-// it provides the user with information about the current status of the services.
+/*
+handelStatusErrorPage handles the main page for the /librarystats/v1/status/ endpoint
+it provides the user with information about the current status of the services.
+*/
 func handelStatusErrorPage(w http.ResponseWriter, path string) {
 	// Offer information for redirection to paths
 	output := "Welcome to the status service where you can get the status code and information of the different endpoints.\n" +

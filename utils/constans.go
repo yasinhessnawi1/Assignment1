@@ -14,7 +14,6 @@ const TOTAL_BOOKS_IN_GUTENDEX int = 72810
 
 //Documentation: http://129.241.150.113:8000/
 
-// Fallback URL (temporary use; please use responsibly!):
 const GUTENDEX = "http://129.241.150.113:8000/books/?languages="
 
 //Language2Countries API
@@ -23,8 +22,7 @@ const GUTENDEX = "http://129.241.150.113:8000/books/?languages="
 
 //Documentation: http://129.241.150.113:3000/
 
-// Fallback URL: (temporary use; may be slow!):
-const LANGUAGE_COUNTRY = "http://129.241.150.113:3000/language2countries/"
+const LANGUAGE_COUNTRY = "http://129.241.150.113:3000/"
 
 //REST Countries API
 
@@ -32,5 +30,4 @@ const LANGUAGE_COUNTRY = "http://129.241.150.113:3000/language2countries/"
 
 //Documentation: http://129.241.150.113:8080/
 
-// Fallback URL (use responsibly!):
-const COUNTRIES = "http://129.241.150.113:8080/v3.1/name/"
+const COUNTRIES = "http://129.241.150.113:8080/"

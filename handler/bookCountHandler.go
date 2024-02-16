@@ -10,8 +10,6 @@ import (
 // BookCountEndPoint handles the /librarystats/v1/bookcount/ endpoint
 // it handles the request and response for the endpoint.
 func BookCountEndPoint(w http.ResponseWriter, r *http.Request) {
-	// Ensure interpretation as JSON by client
-	w.Header().Set("content-type", "application/json")
 	//it checks if the request have a query then it handles the request and the query otherwise
 	//if mistype in the endpoint url or missing query it will show the main page.
 	if r.URL.Query().Get("language") != "" {

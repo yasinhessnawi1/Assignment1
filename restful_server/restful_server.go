@@ -8,7 +8,7 @@ import (
 )
 
 /*
-Main entry point for setting up the router that initializes paths and associated handlers.
+StartWebService is the main entry point for setting up the router that initializes paths and associated handlers.
 */
 func StartWebService() {
 	utils.StartUptime()
