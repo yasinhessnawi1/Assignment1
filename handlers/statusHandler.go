@@ -1,8 +1,10 @@
-package handler
+package handlers
 
 import (
 	"net/http"
+	"oblig1-ct/comms"
 	"oblig1-ct/entities"
+	"oblig1-ct/service"
 	"oblig1-ct/utils"
 )
 
@@ -32,14 +34,14 @@ handleStatusGetRequest handles the GET request for the /librarystats/v1/status/ 
 it handles the Get request and response.
 */
 func handleStatusGetRequest(w http.ResponseWriter) {
-	QutendexapiStatus := ExternalRequestForStatus(utils.GUTENDEX)
-	LanguageapiStatus := ExternalRequestForStatus(utils.LANGUAGE_COUNTRY)
-	CountriesapiStatus := ExternalRequestForStatus(utils.COUNTRIES)
+	QutendexapiStatus := service.ExternalRequestForStatus(utils.GUTENDEX)
+	LanguageapiStatus := service.ExternalRequestForStatus(utils.LanguageCountry)
+	CountriesapiStatus := service.ExternalRequestForStatus(utils.COUNTRIES)
 	// Create status object
 	status := entities.Status{Qutendexapi: QutendexapiStatus, Languageapi: LanguageapiStatus,
 		Countriesapi: CountriesapiStatus, Version: "v1", Uptime: utils.GetUptime().String()}
 	// Encode JSON
-	encodeWithJson(w, status)
+	comms.EncodeWithJson(w, status)
 }
 
 /*
@@ -52,5 +54,5 @@ func handelStatusErrorPage(w http.ResponseWriter, path string) {
 		" You can use the service as follows: \n" +
 		" 1. " + path + utils.STATUS + "-> This will return the status information.\n"
 	// Write output to client
-	encodeTextWithHtml(w, "Status", output)
+	comms.EncodeTextWithHtml(w, "Status", output)
 }

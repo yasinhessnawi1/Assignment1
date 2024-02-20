@@ -1,9 +1,11 @@
-package handler
+package handlers
 
 import (
 	"log"
 	"net/http"
+	"oblig1-ct/comms"
 	"oblig1-ct/entities"
+	"oblig1-ct/service"
 	"oblig1-ct/utils"
 	"strconv"
 	"strings"
@@ -28,7 +30,7 @@ func ReaderShipEndPoint(w http.ResponseWriter, r *http.Request) {
 				" is supported.", http.StatusNotImplemented)
 		}
 	} else {
-		handelReaderCountMainPage(w, r.Host)
+		readershipDocumentationPageHandler(w, r.Host)
 	}
 
 }
@@ -66,7 +68,7 @@ func handleReaderCountGetRequest(w http.ResponseWriter, r *http.Request) {
 		// Call handleLanguageCode with the language code and the length
 		//of the language code and 0 as a limit as the parameter is not provided
 		if !handleLanguageCode(w, letterCount, languageCodes[0], 0) {
-			log.Fatal(w, "Something went wrong while handleing the language request, this error"+
+			log.Fatal(w, "Something went wrong while handling the language request, this error"+
 				" is not expected. Please check handleLanguageCode function in readerCountHandler.go")
 			return
 		}
@@ -104,12 +106,12 @@ handleGetMethodResponse handles the response for the GET request for the /librar
 */
 func handleGetMethodResponse(w http.ResponseWriter, languageCode string, limit int) {
 	// Call ExternalEndPointRequestsHandler to get the response from the language to country endpoint
-	languageToCountryResponse := ExternalEndPointRequestsHandler(utils.LANGUAGE_COUNTRY+"language2countries/"+languageCode, "readerShip")
+	languageToCountryResponse := service.ExternalEndPointRequestsHandler(utils.LanguageCountry+"language2countries/"+languageCode, "readerShip")
 	// extract the country name and iso code from the response of the endpoint
 	countryName, isoCode := extractCountryNameAndIsoCode(languageToCountryResponse)
 	// Call ExternalEndPointRequestsHandler to get the response from the gutenDex endpoint
 	// todo: this can be changed to use the bookcount endpoint
-	res := ExternalEndPointRequestsHandler(utils.GUTENDEX+languageCode, "bookCount")
+	res := service.ExternalEndPointRequestsHandler(utils.GUTENDEX+languageCode, "bookCount")
 	// find the results of the counts
 	bookCount, authorCount := findResultsOfTheCounts(res)
 	// check if there is a limit, if not lets set it to the length of the country name, although all the results
@@ -122,14 +124,14 @@ func handleGetMethodResponse(w http.ResponseWriter, languageCode string, limit i
 	for _, country := range countryName {
 		if index <= limit-1 {
 			// Call ExternalEndPointRequestsHandler to get the response from the countries endpoint
-			restApiResult := ExternalEndPointRequestsHandler(utils.COUNTRIES+"v3.1/name/"+country, "readerShip")
+			restApiResult := service.ExternalEndPointRequestsHandler(utils.COUNTRIES+"v3.1/name/"+country, "readerShip")
 			// extract the population from the response of the countries endpoint
 			population := extractPopulation(restApiResult)
 			// create a new readership object
 			result := entities.Readership{
 				Country: country, Isocode: isoCode[index], Books: bookCount, Authors: authorCount, Readership: population}
 			// Encode JSON
-			encodeWithJson(w, result)
+			comms.EncodeWithJson(w, result)
 			index++
 		}
 
@@ -178,11 +180,10 @@ func extractLanguageCode(path string) string {
 }
 
 /*
-handelReaderCountMainPage handles the documentation page for the /librarystats/v1/readership/ endpoint
-
-	it provides the user with information on how to use the endpoint. in case of no query or mistype it will show this page.
+readershipDocumentationPageHandler handles the documentation page for the /librarystats/v1/readership/ endpoint
+it provides the user with information on how to use the endpoint. in case of no query or mistype it will show this page.
 */
-func handelReaderCountMainPage(w http.ResponseWriter, path string) {
+func readershipDocumentationPageHandler(w http.ResponseWriter, path string) {
 	// Offer information for redirection to paths
 	output := "Welcome to the readership service where you can get number of readers for your chosen language.\n" +
 		" You can use the service as follows: \n" +
@@ -192,5 +193,5 @@ func handelReaderCountMainPage(w http.ResponseWriter, path string) {
 		" Example: " + path + utils.READERSHIP + "/no/?limit=5" + " -> This will return the readers of books in " +
 		"norwegian language with the limit of 5 countries.\n"
 	// Write output to client
-	encodeTextWithHtml(w, "Readership", output)
+	comms.EncodeTextWithHtml(w, "Readership", output)
 }

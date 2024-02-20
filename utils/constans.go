@@ -1,33 +1,34 @@
 package utils
 
-// DEFAULT_PATH is the default path for the handler
-const DEFAULT_PATH = "/librarystats/v1"
+// DefaultPath is the default path for the handlers
+const DefaultPath = "/librarystats/v1"
+
+// HomeEndPoint is the endpoint for the main page
 const HomeEndPoint = "/"
-const BOOK_COUNT = "/librarystats/v1/bookcount/"
+
+// BookCount is the endpoint for the book count
+const BookCount = "/librarystats/v1/bookcount/"
+
+// READERSHIP is the endpoint for the readership
 const READERSHIP = "/librarystats/v1/readership/"
+
+// STATUS is the endpoint for the status
 const STATUS = "/librarystats/v1/status/"
-const TOTAL_BOOKS_IN_GUTENDEX int = 72810
 
-//Gutendex API
+// TotalBooksInGutendex TOTAL_BOOKS_IN_GUTENDEX is the total number of books in the Gutendex API
+const TotalBooksInGutendex int = 72810
 
-//Endpoint: http://129.241.150.113:8000/books/
-
-//Documentation: http://129.241.150.113:8000/
-
+/*
+GUTENDEX is the REST API endpoint for the Gutendex to get the books in the desired language
+*/
 const GUTENDEX = "http://129.241.150.113:8000/books/?languages="
 
-//Language2Countries API
+/*
+LanguageCountry is the endpoint for the language and country API, where we get country names from language code
+*/
+const LanguageCountry = "http://129.241.150.113:3000/"
 
-//Endpoint: http://129.241.150.113:3000/language2countries/
-
-//Documentation: http://129.241.150.113:3000/
-
-const LANGUAGE_COUNTRY = "http://129.241.150.113:3000/"
-
-//REST Countries API
-
-//Endpoint: http://129.241.150.113:8080/v3.1
-
-//Documentation: http://129.241.150.113:8080/
-
+/*
+COUNTRIES is the REST API endpoint for the countries to get the population of the country
+*/
 const COUNTRIES = "http://129.241.150.113:8080/"

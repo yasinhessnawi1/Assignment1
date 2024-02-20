@@ -3,7 +3,7 @@ package restful_server
 import (
 	"log"
 	"net/http"
-	"oblig1-ct/handler"
+	"oblig1-ct/handlers"
 	"oblig1-ct/utils"
 )
 
@@ -12,14 +12,15 @@ StartWebService is the main entry point for setting up the router that initializ
 */
 func StartWebService() {
 	utils.StartUptime()
-	// Set up handler endpoints
-	http.HandleFunc(utils.DEFAULT_PATH, handler.HomeEndPoint)
-	http.HandleFunc(utils.HomeEndPoint, handler.HomeEndPoint)
-	http.HandleFunc(utils.BOOK_COUNT, handler.BookCountEndPoint)
-	http.HandleFunc(utils.READERSHIP, handler.ReaderShipEndPoint)
-	http.HandleFunc(utils.STATUS, handler.StatusEndPoint)
+	// Set up handlers endpoints
+	http.HandleFunc(utils.DefaultPath, handlers.HomeEndPoint)
+	http.HandleFunc(utils.HomeEndPoint, handlers.HomeEndPoint)
+	http.HandleFunc(utils.BookCount, handlers.BookCountEndPoint)
+	http.HandleFunc(utils.READERSHIP, handlers.ReaderShipEndPoint)
+	http.HandleFunc(utils.STATUS, handlers.StatusEndPoint)
 	// Start server
 	port := utils.SetUpPort()
 	log.Println("Starting server on port " + port + " ...")
 	log.Fatal(http.ListenAndServe(":"+port, nil))
+
 }

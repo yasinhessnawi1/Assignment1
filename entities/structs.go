@@ -40,5 +40,5 @@ type Status struct {
 CalculateFraction is a method to the bookCount struct that calculates the fraction of books.
 */
 func (b *BookCount) CalculateFraction() {
-	b.Fraction = float64(b.Books) / float64(utils.TOTAL_BOOKS_IN_GUTENDEX)
+	b.Fraction = float64(b.Books) / float64(utils.TotalBooksInGutendex)
 }

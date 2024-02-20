@@ -1,15 +1,16 @@
-package handler
+package comms
 
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"strings"
 )
 
-// encodeWithJson encodes the given testBook with JSON and writes it to the response writer
-func encodeWithJson(w http.ResponseWriter, responseObject interface{}) {
+// EncodeWithJson encodes the given testBook with JSON and writes it to the response writer
+func EncodeWithJson(w http.ResponseWriter, responseObject interface{}) {
 	w.Header().Set("Content-Type", "application/json")
 	encoder := json.NewEncoder(w)
 	err := encoder.Encode(responseObject)
@@ -18,11 +19,17 @@ func encodeWithJson(w http.ResponseWriter, responseObject interface{}) {
 	}
 }
 
-// decodeForBookCount decodes the request body with JSON and returns the object
-func decodeForBookCount(r *http.Response) ([]map[string]interface{}, string) {
+// DecodeForBookCount decodes the request body with JSON and returns the object
+func DecodeForBookCount(r *http.Response) ([]map[string]interface{}, string) {
 	var response map[string]interface{}
 
 	decoder := json.NewDecoder(r.Body)
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+			log.Println("Error during closing the response body:", err.Error())
+		}
+	}(r.Body)
 	if err := decoder.Decode(&response); err != nil {
 		log.Println("Error during JSON decoding:", err.Error())
 		return nil, ""
@@ -45,12 +52,18 @@ func decodeForBookCount(r *http.Response) ([]map[string]interface{}, string) {
 	log.Println("Unexpected JSON format, no 'results' field found")
 	return nil, ""
 }
-func decodeForReaderShip(r *http.Response) []map[string]interface{} {
+func DecodeForReaderShip(r *http.Response) []map[string]interface{} {
 
 	// Check if "results" field exists and is an array
 	var response []map[string]interface{}
 
 	decoder := json.NewDecoder(r.Body)
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+			log.Println("Error during closing the response body:", err.Error())
+		}
+	}(r.Body)
 	if err := decoder.Decode(&response); err != nil {
 		log.Println("Error during JSON decoding:", err.Error())
 		return nil
@@ -59,7 +72,7 @@ func decodeForReaderShip(r *http.Response) []map[string]interface{} {
 	return response
 
 }
-func encodeTextWithHtml(w http.ResponseWriter, title string, content string) {
+func EncodeTextWithHtml(w http.ResponseWriter, title string, content string) {
 	// creates a customisable html structure
 	contentWithBreaks := strings.Replace(content, "\n", "<br>", -1) // Replace newlines with <br> tags to ensure newlines are displayed
 	output := fmt.Sprintf("<html><head><style>"+
