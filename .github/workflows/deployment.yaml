@@ -19,7 +19,7 @@ jobs:
           echo "pushing files to GitLab"
           git config user.name "yasinmh"
           git config user.email "yasinmh@ntnu.no"
-          git remote add gitlab "https://oauth2=$TOKEN@git.gvk.idi.ntnu.no/course/prog2005/prog2005-2024-workspace/yasinmh/assignment_cloud_technology"
+          git remote add gitlab "https://oauth2=TOKEN@git.gvk.idi.ntnu.no/course/prog2005/prog2005-2024-workspace/yasinmh/assignment_cloud_technology"
           git push -u gitlab --all
           git push -u gitlab --tags
 #       git remote set-url gitlab "https://oauth2=$TOKEN@git.gvk.idi.ntnu.no/course/prog2005/prog2005-2024-workspace/yasinmh/assignment_cloud_technology"
