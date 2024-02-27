@@ -9,7 +9,9 @@ import (
 	"strings"
 )
 
-// EncodeWithJson encodes the given testBook with JSON and writes it to the response writer
+/*
+EncodeWithJson encodes the given object with JSON and writes it to the response writer
+*/
 func EncodeWithJson(w http.ResponseWriter, responseObject interface{}) {
 	w.Header().Set("Content-Type", "application/json")
 	encoder := json.NewEncoder(w)
@@ -19,7 +21,9 @@ func EncodeWithJson(w http.ResponseWriter, responseObject interface{}) {
 	}
 }
 
-// DecodeForBookCount decodes the request body with JSON and returns the object
+/*
+DecodeForBookCount decodes the request body with JSON and returns the object and the link to the next page of results
+*/
 func DecodeForBookCount(r *http.Response) ([]map[string]interface{}, string) {
 	var response map[string]interface{}
 
@@ -34,7 +38,6 @@ func DecodeForBookCount(r *http.Response) ([]map[string]interface{}, string) {
 		log.Println("Error during JSON decoding:", err.Error())
 		return nil, ""
 	}
-
 	// Check if "results" field exists and is an array
 	if results, ok := response["results"].([]interface{}); ok {
 		// Convert the array to a slice of maps
@@ -52,9 +55,11 @@ func DecodeForBookCount(r *http.Response) ([]map[string]interface{}, string) {
 	log.Println("Unexpected JSON format, no 'results' field found")
 	return nil, ""
 }
-func DecodeForReaderShip(r *http.Response) []map[string]interface{} {
 
-	// Check if "results" field exists and is an array
+/*
+DecodeForReaderShip decodes the request body with JSON and returns the object
+*/
+func DecodeForReaderShip(r *http.Response) []map[string]interface{} {
 	var response []map[string]interface{}
 	decoder := json.NewDecoder(r.Body)
 	defer func(Body io.ReadCloser) {
@@ -67,10 +72,12 @@ func DecodeForReaderShip(r *http.Response) []map[string]interface{} {
 		log.Println("Error during JSON decoding:", err.Error())
 		return nil
 	}
-
 	return response
-
 }
+
+/*
+EncodeTextWithHtml encodes the given title and content with HTML and writes it to the response writer
+*/
 func EncodeTextWithHtml(w http.ResponseWriter, title string, content string) {
 	// Replace \n with <br> tags to ensure newlines are displayed
 	contentWithBreaks := strings.Replace(content, "\n", "<br>", -1)

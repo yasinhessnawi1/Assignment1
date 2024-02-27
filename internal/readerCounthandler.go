@@ -159,14 +159,14 @@ func setUpReadershipObject(w http.ResponseWriter, country string, isoCode []stri
 }
 
 /*
-findResultsOfTheCounts finds the population of the country coming in the result of the countries endpoint
+extractPopulation finds the population of the country coming in the result of the countries endpoint
 */
 func extractPopulation(result []map[string]interface{}) float64 {
 	return result[0]["population"].(float64)
 }
 
 /*
-findResultsOfTheCounts finds the name and iso code of the country coming in the result of the language to country endpoint
+extractCountryNameAndIsoCode finds the name and iso code of the country coming in the result of the language to country endpoint
 */
 func extractCountryNameAndIsoCode(response []map[string]interface{}) ([]string, []string) {
 	// a slice that will be populated with the country name
@@ -184,7 +184,7 @@ func extractCountryNameAndIsoCode(response []map[string]interface{}) ([]string, 
 }
 
 /*
-findResultsOfTheCounts finds the language code out from the path of the request
+extractLanguageCode finds the language code out from the path of the request
 */
 func extractLanguageCode(path string) string {
 	// Split the path by "/"
