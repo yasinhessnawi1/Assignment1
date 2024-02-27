@@ -19,6 +19,6 @@ jobs:
           echo "pushing files to GitLab"
           git config user.name "yasinmh"
           git config user.email "yasinmh@ntnu.no"
-          git remote add gitlab "git@git.gvk.idi.ntnu.no:course/prog2005/prog2005-2024-workspace/yasinmh/assignment1.git"
+          git remote add gitlab git@git.gvk.idi.ntnu.no:course/prog2005/prog2005-2024-workspace/yasinmh/assignment1.git
           git push -u gitlab --all
           git push -u gitlab --tags
