@@ -1,24 +1,30 @@
-name: Pushing from github to gitlab
+name: Pushing from GitHub to GitLab
+
 on:
   push:
     branches:
-      - mainRepo
+      - main
+      - issueWithyamlfile
+
 jobs:
   copy-files:
     runs-on: ubuntu-latest
     environment: gitlabAss1
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
-    - name: Copy files to GitLab workshop
-      env:
-        TOKEN: ${{ secrets.GITLAB_TOKEN }}
-      run: |
-        echo "pushing files to GitLab"
-        git fetch --unshallow "https://github.com/yasinhessnawi1/Assignment1/"
-        git config user.name "yasinmh"
-        git config user.email "yasinmh@ntnu.no"
-        git remote set-url gitlab "https://oauth2=$TOKEN@git.gvk.idi.ntnu.no/course/prog2005/prog2005-2024-workspace/yasinmh/assignment_cloud_technology"
-        git push -u gitlab --all
-        git push -u gitlab --tags
+      - name: Copy files to GitLab workshop
+        env:
+          GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
+        run: |
+          echo "pushing files to GitLab"
+          git config --global user.name "Yasin Hessnawi"
+          git config --global user.email "yasinmh@stud.ntnu.no"
+          git remote remove origin
+          git remote add origin https://git.gvk.idi.ntnu.no/course/prog2005/prog2005-2024-workspace/yasinmh/assignment1
+          git remote set-url origin "https://oauth2:${GITLAB_TOKEN}@git.gvk.idi.ntnu.no/course/prog2005/prog2005-2024-workspace/yasinmh/assignment1.git"
+          git push --set-upstream origin --all
+          git push --set-upstream origin --tags
