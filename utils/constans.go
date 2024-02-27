@@ -1,6 +1,6 @@
 package utils
 
-// DefaultPath is the default path for the handlers
+// DefaultPath is the default path for the internal
 const DefaultPath = "/librarystats/v1"
 
 // HomeEndPoint is the endpoint for the main page
@@ -32,3 +32,6 @@ const LanguageCountry = "http://129.241.150.113:3000/"
 COUNTRIES is the REST API endpoint for the countries to get the population of the country
 */
 const COUNTRIES = "http://129.241.150.113:8080/"
+
+// Version is the version of the system
+const Version = "v1"

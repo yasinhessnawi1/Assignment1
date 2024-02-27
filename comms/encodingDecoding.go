@@ -56,7 +56,6 @@ func DecodeForReaderShip(r *http.Response) []map[string]interface{} {
 
 	// Check if "results" field exists and is an array
 	var response []map[string]interface{}
-
 	decoder := json.NewDecoder(r.Body)
 	defer func(Body io.ReadCloser) {
 		err := Body.Close()
@@ -73,17 +72,22 @@ func DecodeForReaderShip(r *http.Response) []map[string]interface{} {
 
 }
 func EncodeTextWithHtml(w http.ResponseWriter, title string, content string) {
-	// creates a customisable html structure
-	contentWithBreaks := strings.Replace(content, "\n", "<br>", -1) // Replace newlines with <br> tags to ensure newlines are displayed
+	// Replace \n with <br> tags to ensure newlines are displayed
+	contentWithBreaks := strings.Replace(content, "\n", "<br>", -1)
+
+	// Replace tabs with a series of non-breaking spaces
+	contentWithSpaces := strings.Replace(contentWithBreaks, "\t", "&nbsp;&nbsp;&nbsp;&nbsp;", -1)
+
 	output := fmt.Sprintf("<html><head><style>"+
 		"body { font-size: 18px; color: #333; }"+
 		"h1 { color: #0088cc; }"+
 		"</style></head><body>"+
 		"<h1>%s</h1><p>%s</p>"+
-		"</body></html>", title, contentWithBreaks)
+		"</body></html>", title, contentWithSpaces)
 
 	// Set the Content-Type header to HTML
 	w.Header().Set("Content-Type", "text/html")
+
 	// Write the HTML output directly to the response writer
 	_, err := fmt.Fprint(w, output)
 	if err != nil {

@@ -1,9 +1,9 @@
-package handlers
+package internal
 
 import (
 	"net/http"
 	"oblig1-ct/comms"
-	"oblig1-ct/entities"
+	"oblig1-ct/response_structure"
 	"oblig1-ct/service"
 	"oblig1-ct/utils"
 	"strings"
@@ -94,12 +94,28 @@ func handleLanguageRequest(w http.ResponseWriter, languages []string, res []map[
 		}
 		// Create new book count object
 		authorsCount, bookCount := findResultsOfTheCounts(resultsForLanguage)
-		book := entities.BookCount{Language: lang, Books: bookCount, Authors: authorsCount}
-		// Calculate fraction
-		book.CalculateFraction()
+		//initialize the book count object
+		book := setUpBookResponse(w, lang, bookCount, authorsCount)
 		// Encode JSON
 		comms.EncodeWithJson(w, book)
 	}
+}
+
+/*
+setUpBookResponse sets up the bookcount object
+*/
+func setUpBookResponse(w http.ResponseWriter, lang string, bookCount int, authorsCount int) response_structure.BookCount {
+	book := response_structure.BookCount{Language: "NaN", Books: 0, Authors: 0, Fraction: 0.0}
+	// Set the values for the book count object
+	langErr := book.SetLanguage(lang)
+	utils.ErrorCheck(w, langErr)
+	booksErr := book.SetBooks(bookCount)
+	utils.ErrorCheck(w, booksErr)
+	authorsErr := book.SetAuthors(authorsCount)
+	utils.ErrorCheck(w, authorsErr)
+	fractionErr := book.CalculateFraction()
+	utils.ErrorCheck(w, fractionErr)
+	return book
 }
 
 /*
@@ -110,10 +126,10 @@ func findResultsOfTheCounts(res []map[string]interface{}) (int, int) {
 	uniqueAuthors := make(map[string]interface{})
 
 	for _, book := range res {
+		// Increment bookCount only if there are known authors
+		bookCount++
 		// Check if "authors" field exists and is an array
 		if authors, ok := book["authors"].([]interface{}); ok {
-			// Increment bookCount only if there are known authors
-			bookCount++
 			// check if there is unique authors to add them to the map for counting
 			if len(authors) > 0 {
 				// Loop through the authors
@@ -147,10 +163,17 @@ func bookCountDocumentationPageHandler(w http.ResponseWriter, path string) {
 	output := "Welcome to the book count service where you can get number of books and authors for your chosen language.\n" +
 		" You can use the service as follows: \n" +
 		" 1. " + path + utils.BookCount + "?language=" + "(two letter language code)\n" +
-		" Example: " + path + utils.BookCount + "?language=en " + " -> This will return the number of books in English.\n" +
+		" Example: " + path + utils.BookCount + "?language=en " + "\t-> This will return the number of books in English.\n" +
 		" 2. " + path + utils.BookCount + "?language=" + "(two letter language code)" + "(,)(two letter language code)\n" +
-		" Example: " + path + utils.BookCount + "?language=en,fr" + " -> This will return the number of books in English and French.\n" +
-		"Note: if the books with the given language are a lot, the request would take some time. Please be patient.\n"
+		" Example: " + path + utils.BookCount + "?language=en,fr" + "\t-> This will return the number of books in English and French.\n" +
+		"Note: if the books with the given language are a lot, the request would take some time. Please be patient.\n" +
+		"The response body structure will be as follows:\n" +
+		"{\n" +
+		"\tlanguage: (String) The two letter language code, witch is provided by the client when doing the request.\n" +
+		"\tbooks: (int) the total number of books of the given language.\n" +
+		"\tauthors: (int) the total number of unique authors.\n" +
+		"\tfraction: (float64) the number of books divided by the number of total books in the library.\n" +
+		"}\n"
 	// Write output to client
-	comms.EncodeTextWithHtml(w, "Book count endpoint main page", output)
+	comms.EncodeTextWithHtml(w, "Book count documentation", output)
 }

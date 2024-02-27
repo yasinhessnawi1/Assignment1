@@ -1,4 +1,4 @@
-package handlers
+package internal
 
 import (
 	"net/http"
@@ -29,5 +29,5 @@ func mainPageDocumentationHandler(w http.ResponseWriter, path string) {
 		"3. " + path + utils.STATUS + " to get the status of the service. For more " +
 		"information, please visit the documentation at" + path + utils.STATUS + "\n"
 	// Write output to client (function from encodingDecoding.go)
-	comms.EncodeTextWithHtml(w, "LibraryStats", output)
+	comms.EncodeTextWithHtml(w, "LibraryStats documentation", output)
 }

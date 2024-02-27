@@ -1,10 +1,10 @@
-package handlers
+package internal
 
 import (
 	"log"
 	"net/http"
 	"oblig1-ct/comms"
-	"oblig1-ct/entities"
+	"oblig1-ct/response_structure"
 	"oblig1-ct/service"
 	"oblig1-ct/utils"
 	"strconv"
@@ -128,8 +128,7 @@ func handleGetMethodResponse(w http.ResponseWriter, languageCode string, limit i
 			// extract the population from the response of the countries endpoint
 			population := extractPopulation(restApiResult)
 			// create a new readership object
-			result := entities.Readership{
-				Country: country, Isocode: isoCode[index], Books: bookCount, Authors: authorCount, Readership: population}
+			result := setUpReadershipObject(w, country, isoCode, index, bookCount, authorCount, population)
 			// Encode JSON
 			comms.EncodeWithJson(w, result)
 			index++
@@ -137,6 +136,26 @@ func handleGetMethodResponse(w http.ResponseWriter, languageCode string, limit i
 
 	}
 
+}
+
+/*
+setUpReadershipObject sets up the readership object
+*/
+func setUpReadershipObject(w http.ResponseWriter, country string, isoCode []string, index int, bookCount int,
+	authorCount int, population float64) response_structure.Readership {
+	result := response_structure.Readership{
+		Country: "", Isocode: "", Books: 0, Authors: 0, Readership: 0.0}
+	countryErr := result.SetCountry(country)
+	utils.ErrorCheck(w, countryErr)
+	isoCodeErr := result.SetIsoCode(isoCode[index])
+	utils.ErrorCheck(w, isoCodeErr)
+	booksErr := result.SetBooks(bookCount)
+	utils.ErrorCheck(w, booksErr)
+	authorErr := result.SetAuthors(authorCount)
+	utils.ErrorCheck(w, authorErr)
+	readersErr := result.SetReadership(population)
+	utils.ErrorCheck(w, readersErr)
+	return result
 }
 
 /*
@@ -188,10 +207,18 @@ func readershipDocumentationPageHandler(w http.ResponseWriter, path string) {
 	output := "Welcome to the readership service where you can get number of readers for your chosen language.\n" +
 		" You can use the service as follows: \n" +
 		" 1. " + path + utils.READERSHIP + "(two letter language code)\n" +
-		" Example: " + path + utils.READERSHIP + "/no" + " -> This will return the number of readers of norwegian language.\n" +
+		" Example: " + path + utils.READERSHIP + "/no" + "\t-> This will return the number of readers of norwegian language.\n" +
 		" 2. " + path + utils.READERSHIP + "(two letter language code)" + "?limit=number of your choice\n" +
-		" Example: " + path + utils.READERSHIP + "/no/?limit=5" + " -> This will return the readers of books in " +
-		"norwegian language with the limit of 5 countries.\n"
+		" Example: " + path + utils.READERSHIP + "/no/?limit=5" + "\t-> This will return the readers of books in " +
+		"norwegian language with the limit of 5 countries.\n" +
+		"The response body structure will be as follows:\n" +
+		"{\n" +
+		"\tcountry: (String) Country name.\n" +
+		"\tisocode: (String) the iso code of the country.\n" +
+		"\tbooks: (int) the total number of books of the given language.\n" +
+		"\tauthors: (int) the total number of unique authors.\n" +
+		"\treadership: (float64) the total number of readers in the country.\n" +
+		"}\n"
 	// Write output to client
-	comms.EncodeTextWithHtml(w, "Readership", output)
+	comms.EncodeTextWithHtml(w, "Readership documentation", output)
 }

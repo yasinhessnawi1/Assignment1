@@ -1,9 +1,9 @@
-package handlers
+package internal
 
 import (
 	"net/http"
 	"oblig1-ct/comms"
-	"oblig1-ct/entities"
+	"oblig1-ct/response_structure"
 	"oblig1-ct/service"
 	"oblig1-ct/utils"
 )
@@ -38,8 +38,16 @@ func handleStatusGetRequest(w http.ResponseWriter) {
 	LanguageapiStatus := service.ExternalRequestForStatus(utils.LanguageCountry)
 	CountriesapiStatus := service.ExternalRequestForStatus(utils.COUNTRIES)
 	// Create status object
-	status := entities.Status{Qutendexapi: QutendexapiStatus, Languageapi: LanguageapiStatus,
-		Countriesapi: CountriesapiStatus, Version: "v1", Uptime: utils.GetUptime().String()}
+	status := response_structure.Status{Qutendexapi: 0, Languageapi: 0,
+		Countriesapi: 0, Version: "NaN", Uptime: utils.GetUptime().String()}
+	qutendexapiErr := status.SetQutendexapi(QutendexapiStatus)
+	utils.ErrorCheck(w, qutendexapiErr)
+	languageapiErr := status.SetLanguageapi(LanguageapiStatus)
+	utils.ErrorCheck(w, languageapiErr)
+	countriesapiErr := status.SetCountriesapi(CountriesapiStatus)
+	utils.ErrorCheck(w, countriesapiErr)
+	versionErr := status.SetVersion(utils.Version)
+	utils.ErrorCheck(w, versionErr)
 	// Encode JSON
 	comms.EncodeWithJson(w, status)
 }
@@ -52,7 +60,15 @@ func handelStatusErrorPage(w http.ResponseWriter, path string) {
 	// Offer information for redirection to paths
 	output := "Welcome to the status service where you can get the status code and information of the different endpoints.\n" +
 		" You can use the service as follows: \n" +
-		" 1. " + path + utils.STATUS + "-> This will return the status information.\n"
+		" 1. " + path + utils.STATUS + "\t-> This will return the status information.\n" +
+		"The response body structure will be as follows:\n" +
+		"{\n" +
+		"\tgutendexapi: (int) the status code of the qutendex api.\n" +
+		"\tlanguageapi: (int) the status code of the language to country api.\n" +
+		"\tcountriesapi: (int) the status code of the countries api.\n" +
+		"\tversion: (string) the version of the system.\n" +
+		"\tuptime: (string) the total uptime of the system.\n" +
+		"}\n"
 	// Write output to client
-	comms.EncodeTextWithHtml(w, "Status", output)
+	comms.EncodeTextWithHtml(w, "Status documentation", output)
 }

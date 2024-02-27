@@ -4,7 +4,7 @@ This is an answer to the first assignment of the subject cloud technology.
 This is a simple service that provides some statistics about a library. The service provides 3 different endpoints:
 1. /librarystats/v1/bookcount/ to get the number of books with the desired language.
 2. /librarystats/v1/readership/ to get the number of readers with the desired language.
-3. /librarystats/v1/status/ to get the status of the service.
+3. /librarystats/v1/status/ to get the status of the service. 
 
 
 
@@ -19,10 +19,10 @@ add the following endpoints to the link to see the documentation of the services
 2. /librarystats/v1/readership/ to get the number of readers with the desired language. For more information, please visit the documentation atlocalhost:8080/librarystats/v1/readership/
 3. /librarystats/v1/status/ to get the status of the service. For more information, please visit the documentation atlocalhost:8080/librarystats/v1/status/
 ## As a code:
-### Github
+### GitLab
 If you have access to the repository, you can clone it from the following link:
- https://github.com/yasinhessnawi1/Assignment1/
-### Idea
+https://git.gvk.idi.ntnu.no/course/prog2005/prog2005-2024-workspace/yasinmh/assignment_cloud_technology
+### Running
 Please run the code to host the service on your local machine.
 ### Using/Testing
 You can use the service in your code or test the service in postman or any other API testing tool.
