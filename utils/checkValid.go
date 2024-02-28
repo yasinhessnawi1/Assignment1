@@ -40,3 +40,23 @@ func ErrorCheck(w http.ResponseWriter, err string) {
 		http.Error(w, err, http.StatusInternalServerError)
 	}
 }
+
+/*
+CheckIfLanguageCodeValid checks if the language code is valid otherwise it will show an error message
+*/
+func CheckIfLanguageCodeValid(w http.ResponseWriter, languages []string) bool {
+	// loop through the languages to check if the language code is valid
+	for _, language := range languages {
+		languageLetters := len(language)
+		if languageLetters == 0 {
+			http.Error(w, "No language code provided. "+" (Please provide a language code of two letters)",
+				http.StatusBadRequest)
+			return false
+		} else if languageLetters != 2 {
+			http.Error(w, "Invalid language code: "+"'"+language+"'"+
+				" (Please provide a language code of two letters)", http.StatusBadRequest)
+			return false
+		}
+	}
+	return true
+}

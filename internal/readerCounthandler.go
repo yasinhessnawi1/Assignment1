@@ -43,8 +43,6 @@ func handleReaderCountGetRequest(w http.ResponseWriter, r *http.Request) {
 	languageCodes = make([]string, 1)
 	// Extract the language code from the URL
 	languageCodes[0] = extractLanguageCode(r.URL.Path)
-	// Get the length of the language code
-	letterCount := len(languageCodes[0])
 
 	// Get the language query
 	var query = r.URL.Query().Get("limit")
@@ -58,7 +56,7 @@ func handleReaderCountGetRequest(w http.ResponseWriter, r *http.Request) {
 			return
 		} else {
 			// Call handleLanguageCode with the language code, the length of the language code and the limit
-			if !handleLanguageCode(w, letterCount, languageCodes[0], limit) {
+			if !handleLanguageCode(w, languageCodes[0], limit) {
 				log.Fatal(w, "Something went wrong while handling the language request, this error"+
 					" is not expected. Please check handleLanguageCode function in readerCountHandler.go")
 				return
@@ -67,7 +65,7 @@ func handleReaderCountGetRequest(w http.ResponseWriter, r *http.Request) {
 	} else {
 		// Call handleLanguageCode with the language code and the length
 		//of the language code and 0 as a limit as the parameter is not provided
-		if !handleLanguageCode(w, letterCount, languageCodes[0], 0) {
+		if !handleLanguageCode(w, languageCodes[0], 0) {
 			log.Fatal(w, "Something went wrong while handling the language request, this error"+
 				" is not expected. Please check handleLanguageCode function in readerCountHandler.go")
 			return
@@ -79,24 +77,12 @@ func handleReaderCountGetRequest(w http.ResponseWriter, r *http.Request) {
 /*
 handleLanguageCode handles the language code and the length of the language code
 */
-func handleLanguageCode(w http.ResponseWriter, letterCount int, languageCode string, limit int) bool {
+func handleLanguageCode(w http.ResponseWriter, languageCode string, limit int) bool {
 	// Check if language is provided
-	if letterCount <= 0 {
-		log.Println("Invalid letter length: " + strconv.Itoa(letterCount) + ("line 61 in readerCountHandler.go"))
-		http.Error(w, "No language code provided. "+" (Please provide a language code of two letters)",
-			http.StatusBadRequest)
-
-	} else {
-		// Check if the language code is valid
-		if letterCount != 2 {
-			log.Println("Invalid language code: " + languageCode + ("line 59 in bookCountHandler.go"))
-			http.Error(w, "Invalid language code: "+"'"+languageCode+"'"+
-				" (Please provide a language code of two letters)", http.StatusBadRequest)
-		} else {
-			// handle the response
-			handleGetMethodResponse(w, languageCode, limit)
-			return true
-		}
+	if utils.CheckIfLanguageCodeValid(w, languageCodes) {
+		// handle the response
+		handleGetMethodResponse(w, languageCode, limit)
+		return true
 	}
 	return false
 }
@@ -107,35 +93,44 @@ handleGetMethodResponse handles the response for the GET request for the /librar
 func handleGetMethodResponse(w http.ResponseWriter, languageCode string, limit int) {
 	// Call ExternalEndPointRequestsHandler to get the response from the language to country endpoint
 	languageToCountryResponse := service.ExternalEndPointRequestsHandler(utils.LanguageCountry+"language2countries/"+languageCode, "readerShip")
-	// extract the country name and iso code from the response of the endpoint
-	countryName, isoCode := extractCountryNameAndIsoCode(languageToCountryResponse)
-	// Call ExternalEndPointRequestsHandler to get the response from the gutenDex endpoint
-	// todo: this can be changed to use the bookcount endpoint
-	res := service.ExternalEndPointRequestsHandler(utils.GUTENDEX+languageCode, "bookCount")
-	// find the results of the counts
-	bookCount, authorCount := findResultsOfTheCounts(res)
-	// check if there is a limit, if not lets set it to the length of the country name, although all the results
-	if limit == 0 {
-		limit = len(countryName)
-	}
-	// helper variable to keep track of the index in the countryNames slice and the isoCode slice and to help check the limit
-	index := 0
-	// loop through the countryName slice and extract the needed information
-	for _, country := range countryName {
-		if index <= limit-1 {
-			// Call ExternalEndPointRequestsHandler to get the response from the countries endpoint
-			restApiResult := service.ExternalEndPointRequestsHandler(utils.COUNTRIES+"v3.1/name/"+country, "readerShip")
-			// extract the population from the response of the countries endpoint
-			population := extractPopulation(restApiResult)
-			// create a new readership object
-			result := setUpReadershipObject(w, country, isoCode, index, bookCount, authorCount, population)
-			// Encode JSON
-			comms.EncodeWithJson(w, result)
-			index++
+	if languageToCountryResponse != nil {
+		// extract the country name and iso code from the response of the endpoint
+		countryName, isoCode := extractCountryNameAndIsoCode(languageToCountryResponse)
+		// Call ExternalEndPointRequestsHandler to get the response from the gutenDex endpoint
+		// todo: this can be changed to use the bookcount endpoint
+		res := service.ExternalEndPointRequestsHandler(utils.GUTENDEX+languageCode, "bookCount")
+		if res != nil {
+			// find the results of the counts
+			bookCount, authorCount := findResultsOfTheCounts(res)
+			// check if there is a limit, if not lets set it to the length of the country name, although all the results
+			if limit == 0 {
+				limit = len(countryName)
+			}
+			// helper variable to keep track of the index in the countryNames slice and the isoCode slice and to help check the limit
+			index := 0
+			// loop through the countryName slice and extract the needed information
+			for _, country := range countryName {
+				if index <= limit-1 {
+					// Call ExternalEndPointRequestsHandler to get the response from the countries endpoint
+					restApiResult := service.ExternalEndPointRequestsHandler(utils.COUNTRIES+"v3.1/name/"+country, "readerShip")
+					// some countries are not found in the api so instead of giving an error we just omit them
+					if restApiResult != nil {
+						// extract the population from the response of the countries endpoint
+						population := extractPopulation(restApiResult)
+						// create a new readership object
+						result := setUpReadershipObject(w, country, isoCode, index, bookCount, authorCount, population)
+						// Encode JSON
+						comms.EncodeWithJson(w, result)
+						index++
+					}
+				}
+
+			}
 		}
-
+	} else {
+		http.Error(w, "Error retrieving the countries: Please check and update the input language code "+
+			languageCode+", or try again with another one", http.StatusNotFound)
 	}
-
 }
 
 /*

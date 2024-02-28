@@ -13,13 +13,15 @@ import (
 BookCountEndPoint handles the /librarystats/v1/bookcount/ endpoint, it handles the request and response for the endpoint.
 */
 func BookCountEndPoint(w http.ResponseWriter, r *http.Request) {
+	// Get the language query
+	var query = r.URL.Query().Get("language")
 	//it checks if the request have a query then it handles the request and the query otherwise
 	//if mistype in the endpoint url or missing query it will show the main page.
-	if r.URL.Query().Get("language") != "" {
+	if query != "" {
 		//ensures that the request is a GET request otherwise it will return a 405 status code.
 		if r.Method == http.MethodGet {
 			// Handle GET request
-			handleBookCountGetRequest(w, r)
+			handleBookCountGetRequest(w, query)
 		} else {
 			http.Error(w, "REST Method '"+r.Method+"' not supported. Currently only '"+http.MethodGet+
 				" is supported.", http.StatusNotImplemented)
@@ -27,40 +29,29 @@ func BookCountEndPoint(w http.ResponseWriter, r *http.Request) {
 	} else {
 		bookCountDocumentationPageHandler(w, r.Host)
 	}
-
 }
 
 /*
 handleBookCountGetRequest handles the GET request for the /librarystats/v1/bookcount/ endpoint
 */
-func handleBookCountGetRequest(w http.ResponseWriter, r *http.Request) {
-	// Get the language query
-	var query = r.URL.Query().Get("language")
+func handleBookCountGetRequest(w http.ResponseWriter, query string) {
 	// Split the query by comma to ensure that the user can get the number of books for multiple languages
 	languages := strings.Split(query, ",")
 	// Get the length of the language
 	langCount := len(languages)
 	// Check if the "language" parameter is provided
 	if langCount > 0 {
-		// loop through the languages to check if the language code is valid
-		for _, language := range languages {
-			languageLetters := len(language)
-			if languageLetters == 0 {
-				http.Error(w, "No language code provided. "+" (Please provide a language code of two letters)",
-					http.StatusBadRequest)
-				return
-			} else if languageLetters != 2 {
-				http.Error(w, "Invalid language code: "+"'"+language+"'"+
-					" (Please provide a language code of two letters)", http.StatusBadRequest)
-				return
-			}
+		if !utils.CheckIfLanguageCodeValid(w, languages) {
+			return
 		}
-
 		// Call ExternalEndPointRequestsHandler only once to get the results for all languages
 		res := service.ExternalEndPointRequestsHandler(utils.GUTENDEX+query, "bookCount")
-
 		// Call handleLanguageRequest with the original query result
 		handleLanguageRequest(w, languages, res)
+	} else {
+		http.Error(w, "No language code provided. "+" (Please provide a language code of two letters)",
+			http.StatusBadRequest)
+		return
 	}
 }
 
