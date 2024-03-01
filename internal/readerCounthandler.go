@@ -91,6 +91,7 @@ func handleLanguageCode(w http.ResponseWriter, languageCode string, limit int) b
 handleGetMethodResponse handles the response for the GET request for the /librarystats/v1/readership/ endpoint
 */
 func handleGetMethodResponse(w http.ResponseWriter, languageCode string, limit int) {
+	results := make([]map[string]interface{}, 0)
 	// Call ExternalEndPointRequestsHandler to get the response from the language to country endpoint
 	languageToCountryResponse := service.ExternalEndPointRequestsHandler(utils.LanguageCountry+"language2countries/"+languageCode, "readerShip")
 	if languageToCountryResponse != nil {
@@ -120,13 +121,16 @@ func handleGetMethodResponse(w http.ResponseWriter, languageCode string, limit i
 						// create a new readership object
 						result := setUpReadershipObject(w, country, isoCode, index, bookCount, authorCount, population)
 						// Encode JSON
-						comms.EncodeWithJson(w, result)
+						resultMap, err := comms.StructToMap(result)
+						utils.ErrorCheck(w, err)
+						results = append(results, resultMap)
 						index++
 					}
 				}
 
 			}
 		}
+		comms.EncodeWithJson(w, results)
 	} else {
 		http.Error(w, "Error retrieving the countries: Please check and update the input language code "+
 			languageCode+", or try again with another one", http.StatusNotFound)

@@ -102,3 +102,22 @@ func EncodeTextWithHtml(w http.ResponseWriter, title string, content string) {
 		return
 	}
 }
+
+/*
+StructToMap takes an interface{} as input, which allows you to pass any struct.
+It returns a map[string]interface{} and an error if the conversion fails.
+*/
+func StructToMap(data interface{}) (map[string]interface{}, string) {
+	jsonData, err := json.Marshal(data)
+	if err != nil {
+		return nil, err.Error()
+	}
+
+	var resultMap map[string]interface{}
+	err = json.Unmarshal(jsonData, &resultMap)
+	if err != nil {
+		return nil, err.Error()
+	}
+
+	return resultMap, ""
+}
