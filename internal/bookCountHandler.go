@@ -60,7 +60,8 @@ handleLanguageRequest handles the request for the language query, this function 
 request is a slice of maps, and we need to loop through the results to get the number of books and authors for each language.
 */
 func handleLanguageRequest(w http.ResponseWriter, languages []string, res []map[string]interface{}) {
-	results := make([]map[string]interface{}, 0)
+	results := make([]interface{}, 0)
+
 	for _, lang := range languages {
 		// Get the results for the language
 		var resultsForLanguage []map[string]interface{}
@@ -88,9 +89,7 @@ func handleLanguageRequest(w http.ResponseWriter, languages []string, res []map[
 		authorsCount, bookCount := findResultsOfTheCounts(resultsForLanguage)
 		//initialize the book count object
 		book := setUpBookResponse(w, lang, bookCount, authorsCount)
-		bookMap, err := comms.StructToMap(book)
-		utils.ErrorCheck(w, err)
-		results = append(results, bookMap)
+		results = append(results, book)
 	}
 
 	comms.EncodeWithJson(w, results)
